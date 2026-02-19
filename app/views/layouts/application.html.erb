@@ -7,9 +7,21 @@
     <%= csp_meta_tag %>
 
     <%= stylesheet_link_tag "application" %>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   </head>
 
   <body>
+    <div id="custom-cursor"></div>
+    <div id="cursor-blur"></div>
+    
+    <div class="mesh-bg">
+      <div class="mesh-sphere sphere-1"></div>
+      <div class="mesh-sphere sphere-2"></div>
+      <div class="mesh-sphere sphere-3"></div>
+    </div>
     <%= yield %>
+    
+    <audio id="sound-roll" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
+    <audio id="sound-click" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
   </body>
 </html>

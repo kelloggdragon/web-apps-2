@@ -1,14 +1,93 @@
-<% 
-  fillings = ["Carnitas", "Al Pastor", "Steak", "Fish", "Veggie"]
-%>
+<div class="main-container">
+  <div class="header-wrap" style="margin-bottom: 6rem;">
+    <p class="stat-reveal" style="font-size: 0.8rem; letter-spacing: 0.5em; opacity: 0.5;">GASTRONOMY ARCHIVE 02</p>
+    <h1>CURATED<br>COLLECTION</h1>
+  </div>
 
-<h1>I love tacos!</h1>
-<p>There are so many kinds of tacos!</p>
+  <div class="luxury-grid">
+    <% @fillings.each_with_index do |filling, index| %>
+      <div class="luxury-item" data-index="<%= index + 1 %>">
+        <div class="item-meta">
+          <span class="item-index">0<%= index + 1 %></span>
+          <h2 class="item-name"><%= filling %></h2>
+        </div>
+        <div class="item-action">
+          <span class="taco-emoji" style="font-size: 2rem; filter: grayscale(1); transition: 0.4s;">🌮</span>
+        </div>
+      </div>
+    <% end %>
+  </div>
 
-<ul>
-  <% for filling in fillings %>
-    <li><%= filling %></li>
-  <% end %>
-</ul>
+  <div style="margin-top: 6rem; display: flex; justify-content: space-between; align-items: flex-end;">
+    <div class="footer-stats">
+      <p style="opacity: 0.4; font-size: 0.7rem; text-transform: uppercase; margin-bottom: 0.5rem;">Inventory Count</p>
+      <span style="font-size: 3rem; font-weight: 900;"><%= @fillings.count %></span>
+    </div>
+    
+    <div class="btn-magnetic-wrap">
+      <a href="/tacos" class="btn-action" style="background: #fff; color: #000; border: none; cursor: none; text-decoration: none;">
+        REFRESH ARCHIVE
+      </a>
+    </div>
+  </div>
+</div>
 
-<p>Currently, there are <%= fillings.count %> kinds of tacos.</p>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    // 1. Cursor Engine (Shared logic but redefined for view safety)
+    const cursor = document.getElementById("custom-cursor");
+    const cursorBlur = document.getElementById("cursor-blur");
+    
+    document.addEventListener("mousemove", (e) => {
+      gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0 });
+      gsap.to(cursorBlur, { x: e.clientX - 14, y: e.clientY - 14, duration: 0.15 });
+    });
+
+    const soundClick = document.getElementById("sound-click");
+
+    // 2. Luxury Item Interactions
+    const items = document.querySelectorAll(".luxury-item");
+    items.forEach(item => {
+      item.addEventListener("mouseenter", () => {
+        gsap.to(cursor, { scale: 6, duration: 0.3 });
+        gsap.to(item.querySelector(".taco-emoji"), { filter: "grayscale(0) drop-shadow(0 0 10px gold)", scale: 1.5, duration: 0.4 });
+        gsap.to(item, { paddingLeft: "6rem", duration: 0.4, ease: "power2.out" });
+      });
+      
+      item.addEventListener("mouseleave", () => {
+        gsap.to(cursor, { scale: 1, duration: 0.3 });
+        gsap.to(item.querySelector(".taco-emoji"), { filter: "grayscale(1)", scale: 1, duration: 0.4 });
+        gsap.to(item, { paddingLeft: "4rem", duration: 0.4, ease: "power2.out" });
+      });
+
+      item.addEventListener("click", () => {
+        soundClick.currentTime = 0;
+        soundClick.play();
+        gsap.to(item, { backgroundColor: "#222", duration: 0.1, yoyo: true, repeat: 1 });
+      });
+    });
+
+    // 3. Magnetic Button
+    const refreshBtn = document.querySelector(".btn-action");
+    refreshBtn.addEventListener("mousemove", (e) => {
+      const bound = refreshBtn.getBoundingClientRect();
+      const x = e.clientX - bound.left - bound.width / 2;
+      const y = e.clientY - bound.top - bound.height / 2;
+      gsap.to(refreshBtn, { x: x * 0.3, y: y * 0.3, duration: 0.3 });
+    });
+    
+    refreshBtn.addEventListener("mouseleave", () => {
+      gsap.to(refreshBtn, { x: 0, y: 0, duration: 0.3 });
+    });
+
+    // 4. Staggered Entrance
+    gsap.from(".luxury-item", {
+      duration: 1,
+      y: 50,
+      opacity: 0,
+      stagger: 0.1,
+      ease: "power4.out",
+      delay: 0.5
+    });
+  });
+</script>
